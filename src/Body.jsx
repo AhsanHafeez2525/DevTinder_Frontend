@@ -16,12 +16,12 @@ const Body = () => {
   const fetchUser = async () => {
     if(userData) return;
     try{
-    const response = await axios.get(BASE_URL + '/profile/view',{withCredentials: true});
-      console.log(response.data);
+      const response = await axios.get(BASE_URL + '/profile/view',{withCredentials: true});
+      console.log('User profile data:', response.data);
       dispatch(setUser(response.data));
     } catch (error) {
-      console.log(error);
-      if(error.status === 401){
+      console.error('Error fetching user profile:', error);
+      if(error.response?.status === 401){
         navigate('/login');
       }
     }

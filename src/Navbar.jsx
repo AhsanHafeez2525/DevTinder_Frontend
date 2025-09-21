@@ -6,7 +6,7 @@ import { BASE_URL } from './utils/constants';
 import axios from 'axios';
 import { removeUser } from './store/userSlice';
 import { useNavigate } from 'react-router';
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   console.log("redux user navabr=>", user);
