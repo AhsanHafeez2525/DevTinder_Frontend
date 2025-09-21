@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router";
 import { Provider } from "react-redux"; // ✅ Import Provider
 import Login from "./Login";
 import Profile from "./Profile";
