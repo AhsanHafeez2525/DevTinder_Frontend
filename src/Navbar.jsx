@@ -1,10 +1,31 @@
 import React from 'react';
 import { motion } from "framer-motion";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router';
+import { BASE_URL } from './utils/constants';
+import axios from 'axios';
+import { removeUser } from './store/userSlice';
+import { useNavigate } from 'react-router';
+const MotionLink = motion(Link);
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   console.log("redux user navabr=>", user);
-  const isLoggedIn = user && user.firstName; 
+  const isLoggedIn = user && user.firstName;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const handleLogout = async () => {
+    // http://localhost:3000/logout
+    try{
+   const res= await  axios.post(BASE_URL+'/logout',{withCredentials: true});
+   console.log(res)
+   dispatch(removeUser());
+
+    return  navigate('/login');
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <motion.div
       initial={{ y: -100, opacity: 0 }}
@@ -18,12 +39,12 @@ const Navbar = () => {
       className="navbar bg-base-300 shadow-sm"
     >
       <div className="flex-1">
-        <motion.a 
+        <MotionLink to="/" 
           whileHover={{ scale: 1.05 }}
           className="btn btn-ghost text-xl"
         >
           👨🏻‍💻 DevTinder
-        </motion.a>
+        </MotionLink>
       </div>
       <div className="flex gap-2">
         {/* {user && ( */}
@@ -51,13 +72,13 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <motion.a 
+              <MotionLink to="/profile"
                 whileHover={{ x: 5 }}
                 className="justify-between"
               >
                 Profile
                 <span className="badge">New</span>
-              </motion.a>
+              </MotionLink>
             </li>
             <li>
               <motion.a 
@@ -68,6 +89,7 @@ const Navbar = () => {
             </li>
             <li>
               <motion.a 
+              onClick={handleLogout}
                 whileHover={{ x: 5 }}
               >
                 Logout

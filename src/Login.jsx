@@ -41,7 +41,7 @@ const Login = () => {
         // Show toast for a moment before navigating
         setTimeout(() => {
           navigate('/');
-        }, 500);
+        }, 600);
       } catch (err) {
         console.error(err);
         // Error is already handled by the custom hook
