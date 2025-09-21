@@ -1,15 +1,23 @@
 import React from 'react';
-import axios from 'axios';
 import { useFormik } from 'formik';
 import { motion } from "framer-motion";
 import { loginSchema } from './validation/loginSchema';
 import { useDispatch } from 'react-redux';
+import { setUser } from './store/userSlice';
+import { useNavigate } from 'react-router';
+import { BASE_URL } from './utils/constants';
+import { usePostApi } from './services/usePostApi';
+// const BASE_URL = import.meta.env.BASE_URL || 'http://localhost:3000/login';
 
 const Login = () => {
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
   const [success, setSuccess] = React.useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  // Use the custom hook for API calls
+  const { loading, error, execute: loginApi, reset: resetApi } = usePostApi(`${BASE_URL}/login`, {
+    withCredentials: true
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -18,44 +26,48 @@ const Login = () => {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
-      setLoading(true);
-      setError('');
       setSuccess('');
 
       try {
-        // Added a minimum loading time of 1 second to prevent flash
-        const [response] = await Promise.all([
-          axios.post('http://localhost:3000/login', {
-            emailId: values.email,
-            password: values.password
-          }, {
-            withCredentials: true
-          }),
-          new Promise(resolve => setTimeout(resolve, 1000)) // Minimum loading time
-        ]);
+        const responseData = await loginApi({
+          emailId: values.email,
+          password: values.password
+        });
 
-        console.log('API Response:', response.data);
-        dispatch(setUser(response.data));
+        console.log('API Response:', responseData);
+        dispatch(setUser(responseData));
         setSuccess('Login successful!');
+        
+        // Show toast for a moment before navigating
+        setTimeout(() => {
+          navigate('/');
+        }, 500);
       } catch (err) {
         console.error(err);
-        setError(err.response?.data?.message || 'Login failed. Please try again.');
-      } finally {
-        setLoading(false);
+        // Error is already handled by the custom hook
       }
     }
   });
 
-  // Auto-hide toast after 3 seconds
+  // Auto-hide toast after 1.5 seconds (matches navigation delay)
   React.useEffect(() => {
-    if (success || error) {
+    if (success) {
       const timer = setTimeout(() => {
         setSuccess('');
-        setError('');
-      }, 2000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [success, error]);
+  }, [success]);
+
+  // Auto-hide error toast after 3 seconds
+  React.useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        resetApi(); // Clear error state
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, resetApi]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-200">
@@ -150,14 +162,17 @@ const Login = () => {
       </motion.div>
       
       {/* Toast notifications with motion */}
-      <div className="toast toast-top toast-end">
+      <div className="toast toast-bottom toast-end z-50">
         {success && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="alert alert-success"
+            className="alert alert-success shadow-lg"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span>{success}</span>
           </motion.div>
         )}
@@ -166,8 +181,11 @@ const Login = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="alert alert-error"
+            className="alert alert-error shadow-lg"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span>{error}</span>
           </motion.div>
         )}

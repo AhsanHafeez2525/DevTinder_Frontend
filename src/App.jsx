@@ -4,6 +4,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Body from "./Body";
 import store from "./store/store";
+import Feed from "./Feed";
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
         <Routes>
           {/* Body acts as a layout route */}
           <Route path="/" element={<Body />}>
-            <Route path="login" element={<Login />} />
+            <Route path="/" element={<Feed />} />
+            <Route path="/login" element={<Login />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
