@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './store/userSlice';
 import { useNavigate } from 'react-router';
 import { BASE_URL } from './utils/constants';
-import { usePostApi } from './services/usePostApi';
+import { usePatchApi } from './services/usePatchApi';
 import { editProfileSchema } from './validation/editProfileSchema';
+import UserCard from './components/userCard';
 const EditProfile = () => {
   const [success, setSuccess] = React.useState('');
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const EditProfile = () => {
   const user = useSelector((store) => store.user);
 
   // Custom hook for edit profile API
-  const { loading, error, execute: editApi, reset: resetApi } = usePostApi(`${BASE_URL}/profile/edit`, {
+  const { loading, error, execute: editApi, reset: resetApi } = usePatchApi(`${BASE_URL}/profile/edit`, {
     withCredentials: true
   });
 
@@ -68,7 +69,9 @@ const EditProfile = () => {
   }, [error, resetApi]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-base-200">
+    <>   
+    <div className='flex justify-center items-center gap-24 mt-24'>
+     <div className="flex justify-center items-center bg-base-200">
       <motion.div
         initial={{ x: -300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -251,6 +254,10 @@ const EditProfile = () => {
         )}
       </div>
     </div>
+    <UserCard user={formik.values} />
+    </div>
+    </>
+
   );
 };
 

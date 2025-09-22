@@ -9,7 +9,9 @@ import { useNavigate } from 'react-router';
 const MotionLink = motion.create(Link);
 const Navbar = () => {
   const user = useSelector((store) => store.user);
-  console.log("redux user navabr=>", user);
+  console.log("redux user navbar=>", user);
+  console.log("user.firstName=>", user?.firstName);
+  console.log("user.photoUrl=>", user?.photoUrl);
   const isLoggedIn = user && user.firstName;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ const Navbar = () => {
         {/* {user && ( */}
             {isLoggedIn && (
         <div className="dropdown dropdown-end mx-5 flex">
-        <p className="text-white mt-2 mr-4">Welcome, {user.firstName}</p>
+          <p className="text-white mt-2 mr-4">Welcome, {user.firstName}</p>
           <motion.div 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -61,15 +63,13 @@ const Navbar = () => {
             <div className="w-10 rounded-full">
               <img
                 alt="User Profile"
-                src={user.photoUrl}
+                src={user.photoUrl || "https://via.placeholder.com/40x40?text=U"}
               />
             </div>
           </motion.div>
-          <motion.ul
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
+          <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
             <li>
               <MotionLink to="/profile"
@@ -89,13 +89,13 @@ const Navbar = () => {
             </li>
             <li>
               <motion.a 
-              onClick={handleLogout}
+                onClick={handleLogout}
                 whileHover={{ x: 5 }}
               >
                 Logout
               </motion.a>
             </li>
-          </motion.ul>
+          </ul>
         </div>
         )}
       </div>
