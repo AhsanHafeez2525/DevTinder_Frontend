@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { BASE_URL } from './utils/constants';
 import { usePatchApi } from './services/usePatchApi';
 import { editProfileSchema } from './validation/editProfileSchema';
-import UserCard from './components/userCard';
+import UserCard from './components/UserCard';
 const EditProfile = () => {
   const [success, setSuccess] = React.useState('');
   const dispatch = useDispatch();
