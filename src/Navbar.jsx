@@ -92,6 +92,11 @@ const Navbar = () => {
                 </MotionLink>
               </li>
               <li>
+                <MotionLink to="/requests" whileHover={{ x: 5 }}>
+                  Requests
+                </MotionLink>
+              </li>
+              <li>
                 <motion.a onClick={handleLogout} whileHover={{ x: 5 }}>
                   Logout
                 </motion.a>
