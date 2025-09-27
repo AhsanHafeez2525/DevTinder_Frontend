@@ -1,46 +1,49 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import { motion } from "framer-motion";
-import { loginSchema } from './validation/loginSchema';
+import { signupSchema } from './validation/signupSchema';
 import { useDispatch } from 'react-redux';
 import { setUser } from './store/userSlice';
 import { useNavigate } from 'react-router';
 import { BASE_URL } from './utils/constants';
 import { usePostApi } from './services/usePostApi';
-// const BASE_URL = import.meta.env.BASE_URL || 'http://localhost:3000/login';
 
-const Login = () => {
+const Signup = () => {
   const [success, setSuccess] = React.useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
   // Use the custom hook for API calls
-  const { loading, error, execute: loginApi, reset: resetApi } = usePostApi(`${BASE_URL}/login`, {
+  const { loading, error, execute: signupApi, reset: resetApi } = usePostApi(`${BASE_URL}/signup`, {
     withCredentials: true
   });
 
   const formik = useFormik({
     initialValues: {
-      email: 'john@example.com',
-      password: 'Password123!'
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: ''
     },
-    validationSchema: loginSchema,
+    validationSchema: signupSchema,
     onSubmit: async (values) => {
       setSuccess('');
 
       try {
-        const responseData = await loginApi({
+        const responseData = await signupApi({
+          firstName: values.firstName,
+          lastName: values.lastName,
           emailId: values.email,
           password: values.password
         });
 
         // console.log('API Response:', responseData);
         dispatch(setUser(responseData.data.data));
-        setSuccess('Login successful!');
+        setSuccess('Registration successful!');
         
         // Show toast for a moment before navigating
         setTimeout(() => {
-          navigate('/');
+          navigate('/profile');
         }, 600);
       } catch (err) {
         // console.error(err);
@@ -85,11 +88,61 @@ const Login = () => {
       >
         <div className="card-body">
           <h2 className="card-title text-center text-3xl mb-4">
-            Welcome to DevTinder
+            Join DevTinder
           </h2>
 
           <form onSubmit={formik.handleSubmit}>
             <div className="form-control">
+              <label className="label">
+                <span className="label-text text-white text-lg">First Name</span>
+              </label>
+              <input
+                type="text"
+                name="firstName"
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="Enter your first name"
+                className="input input-bordered text-white mt-2 placeholder-white text-lg py-3"
+                disabled={loading}
+              />
+              {formik.touched.firstName && formik.errors.firstName && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-error text-sm mt-1"
+                >
+                  {formik.errors.firstName}
+                </motion.div>
+              )}
+            </div>
+
+            <div className="form-control mt-4">
+              <label className="label">
+                <span className="label-text text-white text-lg">Last Name</span>
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="Enter your last name"
+                className="input input-bordered text-white mt-2 placeholder-white text-lg py-3"
+                disabled={loading}
+              />
+              {formik.touched.lastName && formik.errors.lastName && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-error text-sm mt-1"
+                >
+                  {formik.errors.lastName}
+                </motion.div>
+              )}
+            </div>
+
+            <div className="form-control mt-4">
               <label className="label">
                 <span className="label-text text-white text-lg">Email</span>
               </label>
@@ -114,7 +167,7 @@ const Login = () => {
               )}
             </div>
 
-            <div className="form-control mt-6">
+            <div className="form-control mt-4">
               <label className="label">
                 <span className="label-text text-white text-lg">Password</span>
               </label>
@@ -150,25 +203,25 @@ const Login = () => {
                 {loading ? (
                   <>
                     <span className="loading loading-spinner"></span>
-                    Logging in...
+                    Creating account...
                   </>
                 ) : (
-                  "Login"
+                  "Sign Up"
                 )}
               </motion.button>
             </div>
 
             {/* Register link */}
             <div className="text-center mt-4">
-              <span className="text-white">Don't have an account? </span>
+              <span className="text-white">Already have an account? </span>
               <motion.button
                 type="button"
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate('/login')}
                 className="link link-accent text-lg font-semibold"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Register
+                Login
               </motion.button>
             </div>
           </form>
@@ -208,4 +261,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

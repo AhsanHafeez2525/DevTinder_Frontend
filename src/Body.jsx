@@ -14,7 +14,8 @@ const Body = () => {
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
   const fetchUser = async () => {
-    if(userData) {
+    // Only fetch user data if we don't have it in the store
+    if(userData && userData.firstName) {
       // console.log('User data already exists:', userData);
       return;
     }

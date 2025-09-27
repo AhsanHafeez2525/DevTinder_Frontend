@@ -9,6 +9,7 @@ import { BASE_URL } from './utils/constants';
 const Feed = () => {
     const feed = useSelector((store) => store.feed);
     const dispatch = useDispatch();
+
     const getFeed = async () => {
         if(feed) return;
         const res = await axios.get(BASE_URL+'/feed',{withCredentials: true});

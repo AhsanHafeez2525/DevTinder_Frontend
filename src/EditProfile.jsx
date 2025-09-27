@@ -8,11 +8,14 @@ import { BASE_URL } from './utils/constants';
 import { usePatchApi } from './services/usePatchApi';
 import { editProfileSchema } from './validation/editProfileSchema';
 import UserCard from './components/UserCard';
-const EditProfile = () => {
+const EditProfile = ({ user: propUser }) => {
   const [success, setSuccess] = React.useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
+  
+  // Use prop user if available, otherwise fall back to Redux user
+  const currentUser = propUser || user;
 
   // Custom hook for edit profile API
   const { loading, error, execute: editApi, reset: resetApi } = usePatchApi(`${BASE_URL}/profile/edit`, {
@@ -21,12 +24,12 @@ const EditProfile = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      photoUrl: user?.photoUrl || '',
-      age: user?.age || '',
-      gender: user?.gender || '',
-      about: user?.about || '',
+      firstName: currentUser?.firstName || '',
+      lastName: currentUser?.lastName || '',
+      photoUrl: currentUser?.photoUrl || '',
+      age: currentUser?.age || '',
+      gender: currentUser?.gender || '',
+      about: currentUser?.about || '',
     },
     validationSchema: editProfileSchema,
     onSubmit: async (values) => {
@@ -67,6 +70,20 @@ const EditProfile = () => {
       return () => clearTimeout(timer);
     }
   }, [error, resetApi]);
+
+  // Update formik values when user data changes
+  React.useEffect(() => {
+    if (currentUser) {
+      formik.setValues({
+        firstName: currentUser?.firstName || '',
+        lastName: currentUser?.lastName || '',
+        photoUrl: currentUser?.photoUrl || '',
+        age: currentUser?.age || '',
+        gender: currentUser?.gender || '',
+        about: currentUser?.about || '',
+      });
+    }
+  }, [currentUser]);
 
   return (
     <>   

@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Provider } from "react-redux"; // ✅ Import Provider
 import Login from "./Login";
+import Signup from "./Signup";
 import Profile from "./Profile";
 import Body from "./Body";
 import store from "./store/store";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Body />}>
             <Route path="/" element={<Feed />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Requests />} />
