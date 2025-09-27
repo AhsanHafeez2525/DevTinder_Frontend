@@ -15,16 +15,16 @@ const Body = () => {
   const userData = useSelector((store) => store.user);
   const fetchUser = async () => {
     if(userData) {
-      console.log('User data already exists:', userData);
+      // console.log('User data already exists:', userData);
       return;
     }
-    console.log('Fetching user data...');
+    // console.log('Fetching user data...');
     try{
       const response = await axios.get(BASE_URL + '/profile/view',{withCredentials: true});
-      console.log('User profile data:', response.data);
+      // console.log('User profile data:', response.data);
       dispatch(setUser(response.data));
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      // console.error('Error fetching user profile:', error);
       if(error.response?.status === 401){
         navigate('/login');
       }

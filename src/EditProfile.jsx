@@ -33,17 +33,17 @@ const EditProfile = () => {
       setSuccess('');
       try {
         const responseData = await editApi(values);
-        console.log("Edit Profile Response:", responseData);
+        // console.log("Edit Profile Response:", responseData);
 
         dispatch(setUser(responseData));
-        setSuccess("Profile updated successfully!");
+        // setSuccess("Profile updated successfully!");
 
         // Redirect back to profile page after short delay
         setTimeout(() => {
           navigate('/profile');
         }, 800);
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     }
   });

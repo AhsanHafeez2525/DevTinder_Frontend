@@ -21,8 +21,8 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: 'dhone12@gmail.com',
-      password: 'Dhoni@78901122!'
+      email: 'john@example.com',
+      password: 'Password123!'
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
@@ -34,7 +34,7 @@ const Login = () => {
           password: values.password
         });
 
-        console.log('API Response:', responseData);
+        // console.log('API Response:', responseData);
         dispatch(setUser(responseData));
         setSuccess('Login successful!');
         
@@ -43,7 +43,7 @@ const Login = () => {
           navigate('/');
         }, 600);
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         // Error is already handled by the custom hook
       }
     }

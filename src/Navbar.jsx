@@ -9,9 +9,9 @@ import { useNavigate } from "react-router";
 const MotionLink = motion.create(Link);
 const Navbar = () => {
   const user = useSelector((store) => store.user);
-  console.log("redux user navbar=>", user);
-  console.log("user.firstName=>", user?.firstName);
-  console.log("user.photoUrl=>", user?.photoUrl);
+  // console.log("redux user navbar=>", user);
+  // console.log("user.firstName=>", user?.firstName);
+  // console.log("user.photoUrl=>", user?.photoUrl);
   const isLoggedIn = user && user.firstName;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,12 +22,12 @@ const Navbar = () => {
       const res = await axios.post(BASE_URL + "/logout", {
         withCredentials: true,
       });
-      console.log(res);
+      // console.log(res);
       dispatch(removeUser());
 
       return navigate("/login");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   return (

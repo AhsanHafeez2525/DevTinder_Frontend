@@ -14,7 +14,7 @@ const Connections = () => {
       withCredentials: true,
     });
     dispatch(setConnections(res.data.data));
-    console.log("Connections=>", res);
+    // console.log("Connections=>", res);
   };
   useEffect(() => {
     fecthConnections();
