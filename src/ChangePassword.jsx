@@ -21,7 +21,7 @@ const ChangePassword = () => {
   const email = location.state?.email;
   
   // Use the custom hook for API calls
-  const { loading, error, execute: changePasswordApi, reset: resetApi } = usePostApi(`${BASE_URL}/change-password`, {
+  const { loading, error, execute: changePasswordApi, reset: resetApi } = usePostApis(`${BASE_URL}/change-password`, {
     withCredentials: true
   });
 
