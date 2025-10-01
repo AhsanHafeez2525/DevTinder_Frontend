@@ -18,9 +18,7 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
   
   // Use the custom hook for API calls
-  const { loading, error, execute: forgotPasswordApi, reset: resetApi } = usePostApi(`${BASE_URL}/forgot-password`, {
-    withCredentials: true
-  });
+  const { loading, error, execute: forgotPasswordApi, reset: resetApi } = usePostApi(`${BASE_URL}/forgot-password`);
 
   const formik = useFormik({
     initialValues: {
@@ -32,14 +30,14 @@ const ForgotPassword = () => {
 
       try {
         await forgotPasswordApi({
-          email: values.email
+          emailId: values.email
         });
 
-        setSuccess('Password reset link sent to your email!');
+        setSuccess('OTP sent to your email!');
         
-        // Show success message for a moment before navigating back
+        // Show success message for a moment before navigating to OTP screen
         setTimeout(() => {
-          navigate('/login');
+          navigate('/otp', { state: { email: values.email } });
         }, 2000);
       } catch (err) {
         // Error is already handled by the custom hook
@@ -130,7 +128,7 @@ const ForgotPassword = () => {
                     Sending...
                   </>
                 ) : (
-                  "Send Reset Link"
+                  "Send OTP"
                 )}
               </motion.button>
             </div>
