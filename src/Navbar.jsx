@@ -44,7 +44,7 @@ const Navbar = () => {
     >
       <div className="flex-1">
         <MotionLink
-          to="/"
+          to="/feed"
           whileHover={{ scale: 1.05 }}
           className="btn btn-ghost text-xl"
         >

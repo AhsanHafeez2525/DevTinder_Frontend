@@ -1,60 +1,58 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import { motion } from "framer-motion";
-import { loginSchema } from './validation/loginSchema';
-import { useDispatch } from 'react-redux';
-import { setUser } from './store/userSlice';
 import { useNavigate } from 'react-router';
 import { BASE_URL } from './utils/constants';
 import { usePostApi } from './services/usePostApi';
-// const BASE_URL = import.meta.env.BASE_URL || 'http://localhost:3000/login';
+import * as Yup from 'yup';
 
-const Login = () => {
+// Validation schema for forgot password
+const forgotPasswordSchema = Yup.object({
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Email is required')
+});
+
+const ForgotPassword = () => {
   const [success, setSuccess] = React.useState('');
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   
   // Use the custom hook for API calls
-  const { loading, error, execute: loginApi, reset: resetApi } = usePostApi(`${BASE_URL}/login`, {
+  const { loading, error, execute: forgotPasswordApi, reset: resetApi } = usePostApi(`${BASE_URL}/forgot-password`, {
     withCredentials: true
   });
 
   const formik = useFormik({
     initialValues: {
-      email: 'john@example.com',
-      password: 'Password123!'
+      email: ''
     },
-    validationSchema: loginSchema,
+    validationSchema: forgotPasswordSchema,
     onSubmit: async (values) => {
       setSuccess('');
 
       try {
-        const responseData = await loginApi({
-          emailId: values.email,
-          password: values.password
+        await forgotPasswordApi({
+          email: values.email
         });
 
-        // console.log('API Response:', responseData);
-        dispatch(setUser(responseData.data));
-        setSuccess('Login successful!');
+        setSuccess('Password reset link sent to your email!');
         
-        // Show toast for a moment before navigating
+        // Show success message for a moment before navigating back
         setTimeout(() => {
-          navigate('/');
-        }, 600);
+          navigate('/login');
+        }, 2000);
       } catch (err) {
-        // console.error(err);
         // Error is already handled by the custom hook
       }
     }
   });
 
-  // Auto-hide toast after 1.5 seconds (matches navigation delay)
+  // Auto-hide success toast after 2 seconds
   React.useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
         setSuccess('');
-      }, 1500);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [success]);
@@ -84,9 +82,13 @@ const Login = () => {
         className="card bg-base-300 text-primary-content w-[28rem] p-6"
       >
         <div className="card-body">
-          <h2 className="card-title text-center text-3xl mb-4">
-            Welcome to DevTinder
+          <h2 className="card-title text-center text-3xl mb-2">
+            Forgot Password
           </h2>
+          
+          <p className="text-center text-white/80 mb-6">
+            Enter your email address and we'll send you a link to reset your password.
+          </p>
 
           <form onSubmit={formik.handleSubmit}>
             <div className="form-control">
@@ -113,33 +115,8 @@ const Login = () => {
                 </motion.div>
               )}
             </div>
-
-            <div className="form-control mt-6">
-              <label className="label">
-                <span className="label-text text-white text-lg">Password</span>
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="Enter your password"
-                className="input input-bordered text-white mt-2 placeholder-white text-lg py-3"
-                disabled={loading}
-              />
-              {formik.touched.password && formik.errors.password && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-error text-sm mt-1"
-                >
-                  {formik.errors.password}
-                </motion.div>
-              )}
-            </div>
             
-            <div className="card-actions justify-center mt-8 pr-8">
+            <div className="card-actions justify-center mt-8">
               <motion.button
                 type="submit"
                 className="btn btn-accent btn-lg w-80"
@@ -150,38 +127,25 @@ const Login = () => {
                 {loading ? (
                   <>
                     <span className="loading loading-spinner"></span>
-                    Logging in...
+                    Sending...
                   </>
                 ) : (
-                  "Login"
+                  "Send Reset Link"
                 )}
               </motion.button>
             </div>
 
-            {/* Forgot Password link */}
+            {/* Back to Login link */}
             <div className="text-center mt-4">
+              <span className="text-white">Remember your password? </span>
               <motion.button
                 type="button"
-                onClick={() => navigate('/forgot-password')}
-                className="link link-accent text-sm"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Forgot Password?
-              </motion.button>
-            </div>
-
-            {/* Register link */}
-            <div className="text-center mt-2">
-              <span className="text-white">Don't have an account? </span>
-              <motion.button
-                type="button"
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate('/login')}
                 className="link link-accent text-lg font-semibold"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Register
+                Back to Login
               </motion.button>
             </div>
           </form>
@@ -221,4 +185,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

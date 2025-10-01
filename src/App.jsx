@@ -1,6 +1,7 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router";
 import { Provider } from "react-redux"; // ✅ Import Provider
 import Login from "./Login";
+import ForgotPassword from "./ForgotPassword";
 import Signup from "./Signup";
 import Profile from "./Profile";
 import Body from "./Body";
@@ -16,12 +17,14 @@ function App() {
         <Routes>
           {/* Body acts as a layout route */}
           <Route path="/" element={<Body />}>
-            <Route path="/" element={<Feed />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Requests />} />
+            <Route path="/feed" element={<Feed />} />
           </Route>
         </Routes>
       </BrowserRouter>
