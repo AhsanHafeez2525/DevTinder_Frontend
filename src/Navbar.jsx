@@ -97,6 +97,11 @@ const Navbar = () => {
                 </MotionLink>
               </li>
               <li>
+                <MotionLink to="/premium" whileHover={{ x: 5 }}>
+                  Premium
+                </MotionLink>
+              </li>
+              <li>
                 <motion.a onClick={handleLogout} whileHover={{ x: 5 }}>
                   Logout
                 </motion.a>
