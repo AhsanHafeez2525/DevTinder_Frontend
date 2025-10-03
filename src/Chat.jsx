@@ -40,9 +40,15 @@ const Chat = () => {
     // Listen for incoming messages
     socket.on("receiveMessage", (data) => {
       console.log("Received message:", data);
+      
+      // Determine if this message is from the current user or the target user
+      // If the firstName matches current user, it's our message, otherwise it's from target user
+      const isFromCurrentUser = data.firstName === currentUser?.firstName;
+      const senderId = isFromCurrentUser ? userId : targetUserId;
+      
       const newMessage = {
         id: Date.now(),
-        senderId: targetUserId,
+        senderId: senderId,
         content: data.text,
         timestamp: new Date(),
         type: 'text'
@@ -68,15 +74,7 @@ const Chat = () => {
       text: newMessage 
     });
     
-    // Add message to local state immediately for better UX
-    const newMsg = {
-      id: Date.now(),
-      senderId: userId,
-      content: newMessage,
-      timestamp: new Date(),
-      type: 'text'
-    };
-    setMessages(prev => [...prev, newMsg]);
+    // Clear the input immediately for better UX
     setNewMessage('');
   };
 
