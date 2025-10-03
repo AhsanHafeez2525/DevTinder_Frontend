@@ -4,6 +4,7 @@ import { BASE_URL } from "./utils/constants";
 import { useDispatch } from "react-redux";
 import { setConnections } from "./store/ConnectionSlice";
 import { useSelector } from "react-redux";
+import { Link } from "react-router";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connection.connections);
@@ -93,6 +94,9 @@ const Connections = () => {
                   <button className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200">
                     Message
                   </button>
+                  <Link to={`/chat/${_id}`}>
+                  <button className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200">Chat</button>
+                  </Link>
                 </div>
               </div>
             </div>

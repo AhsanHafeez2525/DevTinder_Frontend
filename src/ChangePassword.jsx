@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import { changePasswordSchema } from './validation/changePasswordSchema';
 import { useNavigate, useLocation } from 'react-router';
 import { BASE_URL } from './utils/constants';
-import { usePatchApi } from './services/usePatchApi';
 import { usePostApi } from './services/usePostApi';
-
 const ChangePassword = () => {
   const [success, setSuccess] = useState('');
   const [showPasswords, setShowPasswords] = useState({
@@ -21,7 +19,7 @@ const ChangePassword = () => {
   const email = location.state?.email;
   
   // Use the custom hook for API calls
-  const { loading, error, execute: changePasswordApi, reset: resetApi } = usePostApis(`${BASE_URL}/change-password`, {
+  const { loading, error, execute: changePasswordApi, reset: resetApi } = usePostApi(`${BASE_URL}/change-password`, {
     withCredentials: true
   });
 

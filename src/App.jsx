@@ -12,6 +12,7 @@ import Requests from "./Requests";
 import OTP from "./OTP";
 import ChangePassword from "./ChangePassword";
 import Premium from "./Premium";
+import Chat from "./Chat";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Requests />} />
             <Route path="/premium" element={<Premium />} />
+            <Route path="/chat/:targetUserId" element={<Chat />} />
           </Route>
         </Routes>
       </BrowserRouter>
