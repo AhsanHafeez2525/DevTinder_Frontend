@@ -21,6 +21,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
+  const [roomId, setRoomId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   useEffect(() => {
@@ -47,7 +48,7 @@ const Chat = () => {
       const senderId = isFromCurrentUser ? userId : targetUserId;
       
       const newMessage = {
-        id: Date.now(),
+        id: Date.now() + Math.random(),
         senderId: senderId,
         content: data.text,
         timestamp: new Date(),
@@ -79,37 +80,66 @@ const Chat = () => {
   };
 
 
-  // Fetch target user data
+  // Fetch chat data and messages
   useEffect(() => {
-    const fetchTargetUser = async () => {
+    const fetchChatData = async () => {
       try {
-        // This would be a real API call in production
-        // const response = await axios.get(`${BASE_URL}/user/${targetUserId}`, { withCredentials: true });
-        // setTargetUser(response.data);
-        
-        // Mock user data for demo
-        setTargetUser({
-          _id: targetUserId,
-          firstName: 'Alex',
-          lastName: 'Johnson',
-          photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-          isOnline: true
+        // Fetch chat messages from API
+        const response = await axios.get(`${BASE_URL}/chat/${targetUserId}`, { 
+          withCredentials: true 
         });
         
-        // Initialize with empty messages array
-        setMessages([]);
+        const chatData = response.data;
+        console.log('Chat data:', chatData);
+        
+        // Extract target user from participants
+        const targetUserData = chatData.participants.find(
+          participant => participant._id !== userId
+        );
+        
+        if (targetUserData) {
+          setTargetUser({
+            _id: targetUserData._id,
+            firstName: targetUserData.firstName,
+            lastName: targetUserData.lastName,
+            photoUrl: targetUserData.photoUrl || 'https://via.placeholder.com/40x40?text=U',
+            isOnline: true
+          });
+        }
+        
+        // Convert API messages to component format
+        const formattedMessages = chatData.messages.map(msg => ({
+          id: msg._id,
+          senderId: msg.senderId._id,
+          content: msg.text,
+          timestamp: new Date(msg.createdAt),
+          type: 'text'
+        }));
+        
+        setMessages(formattedMessages);
         setIsOnline(true);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error('Error fetching chat data:', error);
+        
+        // Fallback to mock data if API fails
+        setTargetUser({
+          _id: targetUserId,
+          firstName: 'Unknown',
+          lastName: 'User',
+          photoUrl: 'https://via.placeholder.com/40x40?text=U',
+          isOnline: false
+        });
+        
+        setMessages([]);
         setIsLoading(false);
       }
     };
 
-    if (targetUserId) {
-      fetchTargetUser();
+    if (targetUserId && userId) {
+      fetchChatData();
     }
-  }, [targetUserId]);
+  }, [targetUserId, userId]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
